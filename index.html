@@ -103,10 +103,12 @@
         if(target.id == "from"){
             //console.log("from copy icon clicked");
             navigator.clipboard.writeText(fromtext.value);
+            target.classList.toggle("active");
         }
         else{
             //console.log("to copy icon clicked");
             navigator.clipboard.writeText(totext.value);
+            target.classList.toggle("active");
         }
        }
        else if(target.classList.contains("fa-volume-high")) {
