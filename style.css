@@ -101,6 +101,12 @@ button:hover{
 .exchange:hover{
     cursor: pointer;
 }
+#from.active{
+    color: rgb(0, 0, 0);
+}
+#to.active{
+    color: black;
+}
 @media (max-width:909px) {
     .container{
         width: 350px;
