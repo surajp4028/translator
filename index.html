@@ -44,6 +44,7 @@
                 </li>
             </ul>
          </div>
+         <div id="visible">Copied</div>
          <button onclick="translatebtn()">Translate</button>
      </div>
 <script src="countries.js"></script>
@@ -80,6 +81,8 @@
         fetch(apiUrl).then(res => res.json()).then(data => {
            // console.log(data);
             totext.value = data.responseData.translatedText;
+            document.getElementById("visible").classList.remove("active");
+            target.classList.remove("active");
         } );
         //console.log(text, translatefrom, translateto);
     }
@@ -103,12 +106,14 @@
         if(target.id == "from"){
             //console.log("from copy icon clicked");
             navigator.clipboard.writeText(fromtext.value);
-            target.classList.toggle("active");
+            target.classList.add("active");
+            document.getElementById("visible").classList.add("active");
         }
         else{
             //console.log("to copy icon clicked");
             navigator.clipboard.writeText(totext.value);
-            target.classList.toggle("active");
+            target.classList.add("active");
+            document.getElementById("visible").classList.add("active");
         }
        }
        else if(target.classList.contains("fa-volume-high")) {
@@ -118,12 +123,16 @@
             //console.log("from copy icon clicked");
            utterance = new SpeechSynthesisUtterance(fromtext.value);
            utterance.lang = selecttag[0].value;
+           document.getElementById("visible").classList.remove("active");
+            target.classList.remove("active");
 
         }
         else if(target.id == "to"){
             console.log("speech");
             utterance = new SpeechSynthesisUtterance(totext.value);
             utterance.lang = selecttag[1].value;
+            document.getElementById("visible").classList.remove("active");
+            target.classList.remove("active");
         }
         speechSynthesis.speak(utterance);
        }
