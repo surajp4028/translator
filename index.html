@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+    <!-- icon------------- -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+     <div class="container">
+         <div class="text-field">
+            <textarea name="" id="from-text" cols="" rows="" placeholder="Enter Text">hii</textarea>
+            <textarea name="" id="to-text" cols="" rows="" placeholder="Translation" readonly ></textarea>
+         </div>
+         <div class="controls">
+            <ul>
+                <li>
+                    <div class="row from">
+                        <div class="icons">
+                            <i id="from" class="fa-solid fa-volume-high"></i>
+                            <i id="from" class="fa-solid fa-copy"></i>
+                            <select name="" id="">
+                                
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <li class="exchange" onclick="exchanges()"><i class="fa-solid fa-arrow-right-arrow-left"></i>
+                </li>
+                <li class="row to">
+                    <div class="icons">
+                        <select name="" id="">
+                            
+                        </select>
+                        <i id="to" class="fa-solid fa-volume-high"></i>
+                        <i id="to" class="fa-solid fa-copy"></i>
+                        
+                    </div>
+                </li>
+            </ul>
+         </div>
+         <button onclick="translatebtn()">Translate</button>
+     </div>
+<script src="countries.js"></script>
+<script type="text/javascript">
+    var selecttag = document.querySelectorAll("select"),
+    translateBtn = document.querySelector("button"),
+    fromtext = document.getElementById("from-text"),
+    totext = document.getElementById("to-text"),
+    exchange = document.getElementById("exchange");
+    var icons = document.querySelectorAll(".row i");
+   
+    selecttag.forEach(showtag);
+    function showtag(tag,id){
+        //console.log(tag);
+        for(const country_code in countries){
+           // console.log( countries[country_code]);
+            let selected;
+            if(id == 0 && country_code == "en-GB"){
+                selected = "selected";
+            }
+            else if( id == 1 && country_code == "hi-IN"){
+                selected = "selected";
+            }
+            let option = `<option value="${country_code}" ${selected}>${countries[country_code]}</option>`;
+            tag.insertAdjacentHTML("beforeend",option);
+
+        }
+    }
+    function translatebtn(){
+        let text  = fromtext.value,
+        translatefrom = selecttag[0].value,
+        translateto = selecttag[1].value;
+        let apiUrl = `https://api.mymemory.translated.net/get?q=${text}!&langpair=${translatefrom}|${translateto}`;
+        fetch(apiUrl).then(res => res.json()).then(data => {
+           // console.log(data);
+            totext.value = data.responseData.translatedText;
+        } );
+        //console.log(text, translatefrom, translateto);
+    }
+
+    function exchanges(){
+        let tempLang = selecttag[0].value;
+        selecttag[0].value = selecttag[1].value;
+        selecttag[1].value = tempLang;
+
+        //translateBtn();
+
+        let temptext = fromtext.value;
+        fromtext.value = totext.value;
+        totext.value = temptext;
+    }
+
+    icons.forEach(icon => {
+      icon.addEventListener("click",({target}) => {
+        //console.log(target)
+       if(target.classList.contains("fa-copy")){
+        if(target.id == "from"){
+            //console.log("from copy icon clicked");
+            navigator.clipboard.writeText(fromtext.value);
+        }
+        else{
+            //console.log("to copy icon clicked");
+            navigator.clipboard.writeText(totext.value);
+        }
+       }
+       else if(target.classList.contains("fa-volume-high")) {
+         //console.log("speech icon clicked");
+        let utterance;
+        if(target.id == "from"){
+            //console.log("from copy icon clicked");
+           utterance = new SpeechSynthesisUtterance(fromtext.value);
+           utterance.lang = selecttag[0].value;
+
+        }
+        else if(target.id == "to"){
+            console.log("speech");
+            utterance = new SpeechSynthesisUtterance(totext.value);
+            utterance.lang = selecttag[1].value;
+        }
+        speechSynthesis.speak(utterance);
+       }
+      });
+    //  console.log(i);
+    });
+</script>
+</body>
+</html>
